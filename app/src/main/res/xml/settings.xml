@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--<PreferenceCategory-->
+        <!--android:title="@string/settings_recording.time_title">-->
+
+        <!--<EditTextPreference-->
+            <!--android:key="@string/key_max_duration"-->
+            <!--android:title="@string/setting_meeting.recording.chunk.max.duration_item.title"-->
+            <!--android:summary="@string/setting_meeting.recording.chunk.max.duration_item.subtitle"-->
+            <!--android:defaultValue="40"/>-->
+
+        <!--<EditTextPreference-->
+            <!--android:key="@string/key_min_voice_duration"-->
+            <!--android:title="@string/setting_meeting.recording.chunk.min.duration_item.title"-->
+            <!--android:summary="@string/setting_meeting.recording.chunk.min.duration_item.subtitle"-->
+            <!--android:defaultValue="5"/>-->
+
+        <!--<EditTextPreference-->
+            <!--android:key="@string/key_silence_duration"-->
+            <!--android:title="@string/setting_meeting.recording.silence.duration_item.title"-->
+            <!--android:summary="@string/setting_meeting.recording.silence.duration_item.subtitle"-->
+            <!--android:defaultValue="2"/>-->
+
+    <!--</PreferenceCategory>-->
+
+</PreferenceScreen>

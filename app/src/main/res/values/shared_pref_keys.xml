@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string translatable="false" name="key_silence_duration">settings.meeting.recording.chunk.duration.silence</string>
+    <string translatable="false" name="key_min_voice_duration">settings.meeting.recording.chunk.voice.duration.min</string>
+    <string translatable="false" name="key_max_duration">settings.meeting.recording.chunk.duration.max</string>
+</resources>

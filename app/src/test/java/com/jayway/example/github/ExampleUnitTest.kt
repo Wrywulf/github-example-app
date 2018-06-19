@@ -1,4 +1,4 @@
-package com.jayway.example.deskadmin
+package com.jayway.example.github
 
 import org.junit.Test
 

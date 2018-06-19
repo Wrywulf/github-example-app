@@ -1,11 +1,24 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppThemeMaterialComponents" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="App.MaterialButton" parent="Widget.MaterialComponents.Button">
+        <item name="rippleColor">@color/pureWhite</item>
+    </style>
+
+    <style name="App.MaterialButton.Outlined" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="rippleColor">@color/pureWhite</item>
+    </style>
+
+    <style name="AppTheme.Control.Light" parent="ThemeOverlay.MaterialComponents.Light">
+        <item name="colorControlHighlight">@color/colorAccent</item>
+        <item name="colorButtonNormal">@color/colorPrimaryDark</item>
     </style>
 
 </resources>
