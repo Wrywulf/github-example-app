@@ -2,6 +2,7 @@
 
 object Versions {
     const val kotlinVersion = "1.2.50"
+    const val kotlinCoroutines = "0.23.3"
     const val minSdk = 21
     const val targetSdk = 27
     const val compileSdk = 27
@@ -105,12 +106,14 @@ object Versions {
     const val assertJ = "3.9.0"
     const val mockito = "2.13.0"
     const val robolectric = "3.1.2"
-    const val supportTestRunner = "1.0.1"
+    const val supportTestRunner = "1.0.2"
     const val espresso = "3.0.1"
     const val compileTesting = "0.10"
     const val wireMock = "2.6.0"
     const val dexMaker = "1.2"
     const val mockitoKotlin = "1.5.0"
+    const val androidxEspresso = "3.1.0-alpha1"
+    const val androidxTestRunner = "1.1.0-alpha1"
 }
 
 object Libs {
@@ -118,6 +121,7 @@ object Libs {
     const val kotlinStdLibJre7 = "org.jetbrains.kotlin:kotlin-stdlib-jre7:${Versions.kotlinVersion}"
     const val kotlinStdLibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlinVersion}"
     const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlinVersion}"
+    const val kotlinCoroutinesAndroid = "org.jetbrains.kotlinx:kotlinx-coroutines-android:${Versions.kotlinCoroutines}"
 
     // Google AndroidX
     const val androidxAppCompat = "androidx.appcompat:appcompat:${Versions.androidxAppCompat}"
@@ -295,5 +299,17 @@ object Libs {
     const val dexMakerMockito = "com.google.dexmaker:dexmaker-mockito:${Versions.dexMaker}"
     const val rxUiLib2Test = "com.artemzin.rxui2:rxui-test:${Versions.rxUiLib2}"
     const val mockitoKotlin = "com.nhaarman:mockito-kotlin:${Versions.mockitoKotlin}"
+    const val androidxRoomTesting = "androidx.room:room-testing:${Versions.androidxRoom}"
+    const val androidxTestRunner = "androidx.test:runner:${Versions.androidxTestRunner}"
+    const val androidxEspressoCore = "androidx.test.espresso:espresso-core:${Versions.androidxEspresso}"
+    const val androidxEspressoContrib = "androidx.test.espresso:espresso-contrib:${Versions.androidxEspresso}"
+    const val androidxEspressoIntents = "androidx.test.espresso:espresso-intents:${Versions.androidxEspresso}"
+    const val androidxEspressoAccessibility = "androidx.test.espresso:espresso-accessibility:${Versions.androidxEspresso}"
+    const val androidxEspressoWeb = "androidx.test.espresso:espresso-web:${Versions.androidxEspresso}"
+    const val androidxEspressoIdlingResource = "androidx.test.espresso:espresso-idling-resource:${Versions.androidxEspresso}"
+    const val androidxEspressoIdlingConcurrent = "androidx.test.espresso.idling:idling-concurrent:${Versions.androidxEspresso}"
+    const val androidxEspressoIdlingNet = "androidx.test.espresso.idling:idling-net:${Versions.androidxEspresso}"
+    const val androidxNavigationTestingKtx = "android.arch.navigation:navigation-testing-ktx:${Versions.androidxNavigation}"
+
 
 }
