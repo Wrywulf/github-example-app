@@ -74,6 +74,12 @@ dependencies {
     implementation(Libs.koinAndroid)
     implementation(Libs.koinAndroidXViewModel)
 
+    // Networking
+    implementation(Libs.retrofit2)
+    implementation(Libs.retrofit2Rx2Adapter)
+    implementation(Libs.moshi)
+    implementation(Libs.retrofit2MoshiConverter)
+
     // Rx
     implementation(Libs.rxJava2)
     implementation(Libs.rxKotlin2)
@@ -82,6 +88,7 @@ dependencies {
     implementation(Libs.rxUiLib2Kotlin)
     implementation(Libs.rxBinding2Kotlin)
     implementation(Libs.rxBinding2AppCompatKotlin)
+    implementation(Libs.rxRedux)
 
     // Coroutines
     implementation(Libs.kotlinCoroutinesAndroid)
@@ -91,10 +98,12 @@ dependencies {
     debugImplementation(Libs.stetho)
     implementation(Libs.okHttp3LoggingInterceptor)
 
-    // optional - Test helpers
-    androidTestImplementation(Libs.androidxNavigationTestingKtx)
-
+    // Test
     testImplementation(Libs.junit)
+    testImplementation(Libs.rxUiLib2Test)
+    testImplementation(Libs.assertJ)
+    androidTestImplementation(Libs.androidxNavigationTestingKtx)
     androidTestImplementation(Libs.androidxTestRunner)
     androidTestImplementation(Libs.androidxEspressoCore)
+
 }

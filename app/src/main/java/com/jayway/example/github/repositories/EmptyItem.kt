@@ -1,4 +1,4 @@
-package com.jayway.example.github.home
+package com.jayway.example.github.repositories
 
 import com.jayway.example.github.R
 import com.xwray.groupie.kotlinandroidextensions.Item

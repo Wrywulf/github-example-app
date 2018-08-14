@@ -6,9 +6,9 @@
     app:startDestination="@id/navdest_home">
     <fragment
         android:id="@id/navdest_home"
-        android:name="com.jayway.example.github.home.HomeFragment"
+        android:name="com.jayway.example.github.repositories.RepositoriesFragment"
         android:label="@string/bottom_nav_title_home"
-        tools:layout="@layout/fragment_home">
+        tools:layout="@layout/fragment_repositories">
     </fragment>
 </navigation>
 

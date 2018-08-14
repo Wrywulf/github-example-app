@@ -14,15 +14,6 @@ import kotlin.math.pow
 import kotlin.reflect.KClass
 
 /**
- * Convenience method for adding [Disposable] instances to a [CompositeDisposable] using += notation.
- *
- * Ie: compositeDisposable += someDisposable
- */
-@Suppress("NOTHING_TO_INLINE")
-inline operator fun CompositeDisposable.plusAssign(disposable: Disposable) = this.add(disposable).let { Unit }
-
-
-/**
  * Repeats subscriptions to the single source if it emits a [Result.Failure] with a [java.io.IOException]
  * as the direct failure [Throwable] or as one of its causes
  *
