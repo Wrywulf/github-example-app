@@ -102,6 +102,8 @@ dependencies {
     testImplementation(Libs.junit)
     testImplementation(Libs.rxUiLib2Test)
     testImplementation(Libs.assertJ)
+    testImplementation(Libs.mockito)
+    testImplementation(Libs.mockitoKotlin)
     androidTestImplementation(Libs.androidxNavigationTestingKtx)
     androidTestImplementation(Libs.androidxTestRunner)
     androidTestImplementation(Libs.androidxEspressoCore)

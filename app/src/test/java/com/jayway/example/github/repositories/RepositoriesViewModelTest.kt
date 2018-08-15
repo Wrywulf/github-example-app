@@ -1,20 +1,20 @@
 package com.jayway.example.github.repositories
 
-import com.artemzin.rxui.test.TestRxUi
-import com.jakewharton.rxrelay2.BehaviorRelay
-import com.jakewharton.rxrelay2.PublishRelay
-import com.jayway.android.test.ImmediateSchedulersRule
+import com.jayway.android.test.TestSchedulersRule
 import com.jayway.android.test.TimberRule
-import com.jayway.example.github.common.ui.Screen
-import io.reactivex.Observable
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Function
+import com.jayway.example.github.TestScreen
+import com.jayway.example.github.data.dto.GithubRepository
+import com.jayway.example.github.data.service.GithubRepositories
+import com.nhaarman.mockito_kotlin.whenever
+import io.reactivex.Single
 import org.assertj.core.api.Assertions
 import org.junit.Before
 import org.junit.ClassRule
 import org.junit.Rule
 import org.junit.Test
-import timber.log.Timber
+import org.mockito.Mock
+import org.mockito.Mockito
+import org.mockito.MockitoAnnotations
 
 
 class RepositoriesViewModelTest {
@@ -28,51 +28,62 @@ class RepositoriesViewModelTest {
 
     @Rule
     @JvmField
-    val rxRule: ImmediateSchedulersRule = ImmediateSchedulersRule()
+    val rxRule = TestSchedulersRule()
 
-    lateinit var viewModel: RepositoriesViewModel
+
+    @Mock
+    lateinit var testGithubRepositories: GithubRepositories
+
+    private lateinit var viewModel: RepositoriesViewModel
+    private lateinit var testScreen: TestScreen<RepositoriesViewModel.Action, RepositoriesViewModel.State>
 
     @Before
     fun setup() {
-        viewModel = RepositoriesViewModel()
+        MockitoAnnotations.initMocks(this)
+        viewModel = RepositoriesViewModel(testGithubRepositories)
+        testScreen = TestScreen()
     }
 
     @Test
-    fun `initial state is loading first page`() {
-        Timber.d("Starting test")
-        val screen = TestScreen<RepositoriesViewModel.Action, RepositoriesViewModel.State>()
-        viewModel.bind(screen)
+    fun `initial state is Initial`() {
+        viewModel.bind(testScreen)
 
-        Assertions.assertThat(screen.latestState)
-            .isEqualTo(RepositoriesViewModel.State.LoadingInitial)
+        Assertions.assertThat(testScreen.latestState)
+            .isEqualTo(RepositoriesViewModel.State.Initial)
     }
-}
 
-class TestScreen<A, S> : Screen<A, S>() {
+    @Test
+    fun `GIVEN Initial, WHEN LoadInitialPageAction, THEN ShowLoading`() {
+        viewModel.bind(testScreen)
+        testScreen.injectAction(RepositoriesViewModel.Action.LoadInitialPageAction)
 
-    private val internalRecordedStates = mutableListOf<S>()
+        Assertions.assertThat(testScreen.latestState)
+            .isEqualTo(RepositoriesViewModel.State.ShowLoading)
+    }
 
-    private val actionStream = PublishRelay.create<A>()
 
-    val recordedStates: List<S> = internalRecordedStates
+    @Test
+    fun `GIVEN ShowLoading, WHEN PageLoadedAction, THEN ShowContent`() {
 
-    val latestState: S
-        get() = recordedStates.last()
-
-    val stateStream: BehaviorRelay<S> = BehaviorRelay.create()
-
-    init {
-        stateStream.subscribe {
-            internalRecordedStates.add(it)
+        val repositories = mutableListOf<GithubRepository>().apply {
+            this.addAll((0..5L).map {
+                GithubRepository(id = it,
+                                 name = "repo $it",
+                                 fullName = "/path/to/repo/full_name_$it",
+                                 stars = it * 10)
+            })
         }
-    }
+        val page = 1
+        val expectedState = RepositoriesViewModel.State.ShowContentState(repositories = repositories,
+                                                                         page = page)
+        whenever(testGithubRepositories.getAllRepos(Mockito.anyInt())).thenReturn(Single.just(repositories))
 
-    fun injectAction(action: A) = actionStream.accept(action)
+        viewModel.bind(testScreen)
+        testScreen.injectAction(RepositoriesViewModel.Action.LoadInitialPageAction)
 
-    override val userActions: Observable<A> = Observable.empty()
+        rxRule.testScheduler.triggerActions()
 
-    override val render: Function<Observable<S>, Disposable> = TestRxUi.testUi {
-        Timber.d("TestScreen state: $it")
-        stateStream.accept(it)
+        Assertions.assertThat(testScreen.latestState).isEqualTo(expectedState)
     }
 }
+

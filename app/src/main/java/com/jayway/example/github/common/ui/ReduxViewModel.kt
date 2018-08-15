@@ -34,13 +34,14 @@ abstract class ReduxViewModel<Action, State, Arguments> :
                 ::reducer
             )
             .distinctUntilChanged()
+            .doOnNext { Timber.d("State output: $it") }
     }
 
-    open val scheduler : Scheduler = Schedulers.trampoline()
+    protected open val scheduler : Scheduler = Schedulers.trampoline()
 
-    abstract val initialState : State
+    protected abstract val initialState : State
 
-    abstract val sideEffects : List<SideEffect<State, Action>>
+    protected abstract val sideEffects : List<SideEffect<State, Action>>
 
-    abstract fun reducer(state: State, action: Action): State
+    protected abstract fun reducer(state: State, action: Action): State
 }

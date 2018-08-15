@@ -11,7 +11,7 @@ interface GithubRepositories {
     fun getJaywayRepos()
 
     @GET("repositories")
-    fun getAllRepos(@Query("since") page: String) : Single<List<GithubRepository>>
+    fun getAllRepos(@Query("since") page: Int) : Single<List<GithubRepository>>
 
     @GET("search/repositories")
     fun search(

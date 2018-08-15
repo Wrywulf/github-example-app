@@ -40,7 +40,7 @@ val baseModule: Module = applicationContext {
     single { OkHttpClient.Builder().addInterceptor(get("headerInterceptor")).build() }
     single { buildRetrofit() }
     single { get<Retrofit>().create(GithubRepositories::class.java)}
-    viewModel { RepositoriesViewModel() }
+    viewModel { RepositoriesViewModel(get()) }
 
 
 }
