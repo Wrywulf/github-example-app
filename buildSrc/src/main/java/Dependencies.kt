@@ -1,7 +1,10 @@
 @file:Suppress("unused")
 
+import org.gradle.api.artifacts.dsl.RepositoryHandler
+import org.gradle.kotlin.dsl.maven
+
 object Versions {
-    const val kotlinVersion = "1.2.50"
+    const val kotlinVersion = "1.2.60"
     const val kotlinCoroutines = "0.23.3"
     const val minSdk = 21
     const val targetSdk = 27
@@ -103,6 +106,8 @@ object Versions {
     // Testing.
     const val junit = "4.12"
     const val junitParams = "1.0.5"
+    const val junitPlatform = "1.2.0"
+    const val junit5Android = "1.2.0.0"
     const val assertJ = "3.9.0"
     const val mockito = "2.13.0"
     const val robolectric = "3.1.2"
@@ -114,9 +119,28 @@ object Versions {
     const val mockitoKotlin = "1.5.0"
     const val androidxEspresso = "3.1.0-alpha1"
     const val androidxTestRunner = "1.1.0-alpha1"
+    const val spek1 = "1.2.0"
 }
 
 object Libs {
+
+    /**
+     * The repositories hosting the libraries below
+     *
+     * Invoke this in place of repositories { .. } in the module's build.gradle.kts. (or in the allProjects closure in the root build.gradle.kts)
+     *
+     * Ie.
+     * ```
+     * repositories(Libs.repositories)
+     * ```
+     */
+    val repositories: RepositoryHandler.() -> Unit = {
+        google()
+        jcenter()
+        maven("https://dl.bintray.com/spekframework/spek/")
+    }
+
+
     // Kotlin
     const val kotlinStdLibJre7 = "org.jetbrains.kotlin:kotlin-stdlib-jre7:${Versions.kotlinVersion}"
     const val kotlinStdLibJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlinVersion}"
@@ -279,6 +303,7 @@ object Libs {
     // Testing.             
     const val junit = "junit:junit:${Versions.junit}"
     const val junitParams = "pl.pragmatists:JUnitParams:${Versions.junitParams}"
+    const val junitPlatformRunner = "org.junit.platform:junit-platform-runner:${Versions.junitPlatform}" //For running JUnit5 tests as part of JUnit4 run
     const val assertJ = "org.assertj:assertj-core:${Versions.assertJ}"
     const val mockito = "org.mockito:mockito-core:${Versions.mockito}"
     const val robolectric = "org.robolectric:robolectric:${Versions.robolectric}"
@@ -310,6 +335,36 @@ object Libs {
     const val androidxEspressoIdlingConcurrent = "androidx.test.espresso.idling:idling-concurrent:${Versions.androidxEspresso}"
     const val androidxEspressoIdlingNet = "androidx.test.espresso.idling:idling-net:${Versions.androidxEspresso}"
     const val androidxNavigationTestingKtx = "android.arch.navigation:navigation-testing-ktx:${Versions.androidxNavigation}"
+    const val spek1PlatformEngine = "org.jetbrains.spek:spek-junit-platform-engine:${Versions.spek1}"
+    const val spek1Api = "org.jetbrains.spek:spek-api:${Versions.spek1}"
 
 
+}
+
+/**
+ * The build-script dependencies, gradle plugins etc.
+ *
+ * Applied using ``` classpath(BuildLibs.xxx) ``` in the root build.gradle.kts
+ */
+object BuildLibs {
+
+
+    /**
+     * The repositories hosting the build scripts/plugins below
+     *
+     * Invoke this in place of repositories { .. } in the root build.gradle.kts
+     *
+     * Ie.
+     * ```
+     * repositories(BuildLibs.repositories)
+     * ```
+     */
+    val repositories: RepositoryHandler.() -> Unit = {
+        google()
+        jcenter()
+    }
+
+    const val androidXNavigationPlugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:${Versions.androidxNavigation}"
+    const val junitPlatformGradlePlugin = "org.junit.platform:junit-platform-gradle-plugin:${Versions.junitPlatform}"
+    const val junit5AndroidPlugin = "de.mannodermaus.gradle.plugins:android-junit5:${Versions.junit5Android}"
 }

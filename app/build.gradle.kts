@@ -1,5 +1,6 @@
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import com.android.tools.build.bundletool.utils.Versions
+import de.mannodermaus.gradle.plugins.junit5.junitPlatform
 import org.gradle.kotlin.dsl.kotlin
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
@@ -10,6 +11,7 @@ plugins {
     id("kotlin-android-extensions")
     id("kotlin-kapt")
     id("androidx.navigation.safeargs")
+    id("de.mannodermaus.android-junit5") // junit5 doesn't support android projects out of the box
 }
 
 //android {
@@ -38,6 +40,14 @@ android {
     lintOptions {
 
     }
+
+    testOptions {
+        junitPlatform {
+            filters {
+                includeEngines("spek")
+            }
+        }
+    }
 }
 
 androidExtensions {
@@ -50,6 +60,7 @@ androidExtensions {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar"))))
     implementation(kotlin("stdlib-jdk7", KotlinCompilerVersion.VERSION))
+
 
     // AndroidX Core
     implementation(Libs.androidxAppCompat)
@@ -104,6 +115,10 @@ dependencies {
     testImplementation(Libs.assertJ)
     testImplementation(Libs.mockito)
     testImplementation(Libs.mockitoKotlin)
+    testImplementation(Libs.spek1Api)
+    testImplementation(Libs.spek1PlatformEngine)
+    testImplementation(Libs.junitPlatformRunner)
+
     androidTestImplementation(Libs.androidxNavigationTestingKtx)
     androidTestImplementation(Libs.androidxTestRunner)
     androidTestImplementation(Libs.androidxEspressoCore)
