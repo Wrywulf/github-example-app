@@ -11,7 +11,7 @@ import io.reactivex.functions.Function
 /**
  * A simple [Screen] for which input actions [A] can be injected and output state [S] can be observed
  */
-class TestScreen<A, S> : Screen<A, S>() {
+open class TestScreen<A, S> : Screen<A, S> {
 
     private val internalRecordedStates = mutableListOf<S>()
     private val actionStream = PublishRelay.create<A>()

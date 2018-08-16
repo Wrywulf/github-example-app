@@ -4,8 +4,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
 
-abstract class Screen<Action, State> {
+interface Screen<Action, State> {
 
-    abstract val userActions: Observable<Action>
-    abstract val render: Function<Observable<State>, Disposable>
+    val userActions: Observable<Action>
+    val render: Function<Observable<State>, Disposable>
 }

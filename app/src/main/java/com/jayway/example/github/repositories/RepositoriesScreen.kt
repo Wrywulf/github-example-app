@@ -9,7 +9,7 @@ import io.reactivex.functions.Function
 import timber.log.Timber
 
 
-class RepositoriesScreen(viewGroup: ViewGroup) : Screen<RepositoriesViewModel.Action, RepositoriesViewModel.State>() {
+class RepositoriesScreen(viewGroup: ViewGroup) : Screen<RepositoriesViewModel.Action, RepositoriesViewModel.State> {
 
     override val userActions: Observable<RepositoriesViewModel.Action>
         get() = TODO("not implemented") //To change initializer of created properties use File | Settings | File Templates.
