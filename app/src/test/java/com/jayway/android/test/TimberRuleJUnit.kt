@@ -9,11 +9,11 @@ import timber.log.Timber
 /**
  * A rule that plants a Timber.Tree which logs to System.out
  */
-class TimberRule(val tag : String) : TestRule {
+class TimberRuleJUnit(val tag : String) : TestRule {
 
     val systemOutTree = object : Timber.Tree() {
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-            System.out.println("${this@TimberRule.tag}: $message")
+            System.out.println("${this@TimberRuleJUnit.tag}: $message")
             t?.let {
                 System.out.println(t.stackTrace)
             }
