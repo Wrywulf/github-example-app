@@ -44,13 +44,13 @@ object Versions {
 
     // Reactive.
     const val rxJava = "1.3.0"
-    const val rxJava2 = "2.1.14"
-    const val rxKotlin2 = "2.2.0"
+    const val rxJava2 = "2.2.0"
+    const val rxKotlin2 = "2.3.0"
     const val rxJavaInterop = "0.10.1"
     const val rxJavaProGuardRules = "1.1.6.0"
     const val rxJavaAsyncUtil = "0.21.0"
     const val rxAndroid = "1.2.1"
-    const val rxAndroid2 = "2.0.2"
+    const val rxAndroid2 = "2.1.0"
     const val rxRelay = "1.2.0"
     const val rxRelay2 = "2.0.0"
     const val rxLifecycle = "1.0"
