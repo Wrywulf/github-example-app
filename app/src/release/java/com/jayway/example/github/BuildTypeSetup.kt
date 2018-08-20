@@ -1,4 +1,4 @@
-package com.jayway.example.speakerrecognition
+package com.jayway.example.github
 
 import android.app.Application
 
