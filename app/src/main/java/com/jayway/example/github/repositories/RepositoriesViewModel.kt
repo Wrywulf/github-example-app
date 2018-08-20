@@ -42,12 +42,6 @@ class RepositoriesViewModel(private val githubRepositories: GithubRepositories) 
 
     private fun loadRepos(page: Int): Observable<RepositoriesViewModel.Action> {
         return githubRepositories.getAllRepos(page)
-            .doOnSubscribe {
-                Timber.d("### onSubscribe()")
-            }
-            .doOnError {
-                Timber.d("### onError(): $it")
-            }
             .subscribeOn(Schedulers.io())
             .toObservable()
             .doOnNext {

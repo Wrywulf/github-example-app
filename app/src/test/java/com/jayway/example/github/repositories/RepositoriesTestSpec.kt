@@ -1,19 +1,25 @@
 package com.jayway.example.github.repositories
 
-import com.jayway.android.test.*
+import com.jayway.android.test.RxImmediateSchedulerRule
+import com.jayway.android.test.TimberRule
+import com.jayway.android.test.testRules
 import com.jayway.example.github.data.dto.GithubRepository
 import com.jayway.example.github.data.service.GithubRepositories
 import com.nhaarman.mockito_kotlin.whenever
 import io.reactivex.Single
 import org.assertj.core.api.Assertions
 import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.*
+import org.jetbrains.spek.api.dsl.describe
+import org.jetbrains.spek.api.dsl.given
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
+import org.jetbrains.spek.api.lifecycle.CachingMode
 import org.mockito.Mockito
 
 
 object RepositoriesTestSpec : Spek({
                                        testRules(
-                                           TimberRule("RepositoriesTestSpec"),
+                                           TimberRule("RepositoriesTest"),
                                            RxImmediateSchedulerRule
                                        )
 
@@ -22,112 +28,105 @@ object RepositoriesTestSpec : Spek({
                                            val testGithubRepositories = Mockito.mock(
                                                GithubRepositories::class.java
                                            )
-                                           //                                               val viewModel: RepositoriesViewModel by memoized(mode = CachingMode.SCOPE) {
-                                           //                                                   RepositoriesViewModel(testGithubRepositories)
-                                           //                                               }
-
-                                           //                                               val testScreen by memoized(mode = CachingMode.SCOPE) {
-                                           //                                                   RepositoriesTestScreen()
-                                           //                                               }
-
-                                           val viewModel =
+                                           val viewModel: RepositoriesViewModel by memoized(mode = CachingMode.SCOPE) {
                                                RepositoriesViewModel(testGithubRepositories)
+                                           }
 
+                                           val testScreen by memoized(mode = CachingMode.SCOPE) {
+                                               RepositoriesTestScreen()
+                                           }
 
-                                           val testScreen = RepositoriesTestScreen()
+                                           beforeGroup { viewModel.bind(testScreen) }
 
-                                           given("Screen is bound to ViewModel") {
-                                               viewModel.bind(testScreen)
-                                               it("has state INITIAL") {
-                                                   Assertions.assertThat(testScreen.recordedStates.first())
-                                                       .isEqualTo(RepositoriesViewModel.State.NoData.Initial)
+                                           it("has state INITIAL") {
+                                               Assertions.assertThat(testScreen.recordedStates.first())
+                                                   .isEqualTo(RepositoriesViewModel.State.NoData.Initial)
+                                           }
+
+                                           given("no network connection") {
+                                               beforeGroup {
+                                                   whenever(
+                                                       testGithubRepositories.getAllRepos(
+                                                           Mockito.anyInt()
+                                                       )
+                                                   ).thenReturn(
+                                                       Single.error(
+                                                           RuntimeException("No Network")
+                                                       )
+                                                   )
                                                }
 
-                                               given("no network connection") {
-                                                   beforeGroup {
-                                                       whenever(
-                                                           testGithubRepositories.getAllRepos(
-                                                               Mockito.anyInt()
-                                                           )
-                                                       ).thenReturn(
-                                                           Single.error(
-                                                               RuntimeException("No Network")
-                                                           )
-                                                       )
+                                               on("loading initial page") {
+                                                   testScreen.loadNextPage()
+
+                                                   it("enters state ShowLoading") {
+                                                       Assertions.assertThat(testScreen.recordedStates[1])
+                                                           .isEqualTo(RepositoriesViewModel.State.NoData.ShowLoading)
                                                    }
 
-                                                   on("loading initial page") {
-                                                       testScreen.loadNextPage()
+                                                   it("ends in state NoNetwork") {
+                                                       Assertions.assertThat(testScreen.latestState)
+                                                           .isInstanceOf(
+                                                               RepositoriesViewModel.State.NoData.ErrorLoadingPage::class.java
+                                                           )
+                                                   }
+                                               }
+                                           }
 
-                                                       it("enters state ShowLoading") {
-                                                           Assertions.assertThat(testScreen.recordedStates[1])
-                                                               .isEqualTo(RepositoriesViewModel.State.NoData.ShowLoading)
-                                                       }
+                                           given("network connection") {
+                                               val testData = testRepositories()
+                                               beforeGroup {
+                                                   whenever(
+                                                       testGithubRepositories.getAllRepos(
+                                                           Mockito.anyInt()
+                                                       )
+                                                   ).thenReturn(
+                                                       Single.just(testData)
+                                                   )
+                                               }
+                                               on("user retries loading data") {
+                                                   testScreen.loadNextPage()
 
-                                                       it("ends in state NoNetwork") {
-                                                           Assertions.assertThat(testScreen.latestState)
-                                                               .isInstanceOf(
-                                                                   RepositoriesViewModel.State.NoData.ErrorLoadingPage::class.java
+                                                   it("enters state ShowLoading") {
+                                                       Assertions.assertThat(
+                                                           testScreen.recordedStates[testScreen.recordedStates.size - 2]
+                                                       )
+                                                           .isEqualTo(RepositoriesViewModel.State.NoData.ShowLoading)
+                                                   }
+
+                                                   it("ends up showing content from page 1") {
+                                                       Assertions.assertThat(testScreen.latestState)
+                                                           .isEqualTo(
+                                                               RepositoriesViewModel.State.WithData.ShowContentState(
+                                                                   testData, 1
                                                                )
-                                                       }
+                                                           )
                                                    }
                                                }
 
-                                               given("network connection") {
-                                                   val testData = testRepositories()
-                                                   beforeGroup {
-                                                       whenever(
-                                                           testGithubRepositories.getAllRepos(
-                                                               Mockito.anyInt()
-                                                           )
-                                                       ).thenReturn(
-                                                           Single.just(testData)
-                                                       )
-                                                   }
-                                                   on("user retries loading data") {
-                                                       testScreen.loadNextPage()
+                                               on("user loads next page") {
+                                                   testScreen.loadNextPage()
 
-                                                       it("enters state ShowLoading") {
-                                                           Assertions.assertThat(
-                                                               testScreen.recordedStates[testScreen.recordedStates.size - 2]
+                                                   it("ends up showing content from page 2") {
+                                                       Assertions.assertThat(testScreen.latestState)
+                                                           .isInstanceOf(
+                                                               RepositoriesViewModel.State.WithData.ShowContentState::class.java
                                                            )
-                                                               .isEqualTo(RepositoriesViewModel.State.NoData.ShowLoading)
-                                                       }
-
-                                                       it("ends up showing content from page 1") {
-                                                           Assertions.assertThat(testScreen.latestState)
-                                                               .isEqualTo(
-                                                                   RepositoriesViewModel.State.WithData.ShowContentState(
-                                                                       testData, 1
-                                                                   )
-                                                               )
-                                                       }
+                                                       val actualPage =
+                                                           (testScreen.latestState as RepositoriesViewModel.State.WithData).page
+                                                       Assertions.assertThat(actualPage)
+                                                           .isEqualTo(2)
                                                    }
 
-                                                   on("user loads next page") {
-                                                       testScreen.loadNextPage()
+                                                   it("shows both page 1 and page 2") {
+                                                       val actualRepos =
+                                                           (testScreen.latestState as RepositoriesViewModel.State.WithData).repositories
+                                                       val expectedRepos = testData + testData
 
-                                                       it("ends up showing content from page 2") {
-                                                           Assertions.assertThat(testScreen.latestState)
-                                                               .isInstanceOf(
-                                                                   RepositoriesViewModel.State.WithData.ShowContentState::class.java
-                                                               )
-                                                           val actualPage =
-                                                               (testScreen.latestState as RepositoriesViewModel.State.WithData).page
-                                                           Assertions.assertThat(actualPage)
-                                                               .isEqualTo(2)
-                                                       }
-
-                                                       it("screen shows both page 1 and page 2") {
-                                                           val actualRepos =
-                                                               (testScreen.latestState as RepositoriesViewModel.State.WithData).repositories
-                                                           val expectedRepos = testData + testData
-
-                                                           Assertions.assertThat(actualRepos)
-                                                               .containsExactlyElementsOf(
-                                                                   expectedRepos
-                                                               )
-                                                       }
+                                                       Assertions.assertThat(actualRepos)
+                                                           .containsExactlyElementsOf(
+                                                               expectedRepos
+                                                           )
                                                    }
                                                }
                                            }
