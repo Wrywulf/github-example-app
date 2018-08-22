@@ -65,22 +65,13 @@ abstract class ReduxViewModel<Action, State, Arguments> : ViewModel(),
                 }
         }
 
-
-    /**
-     * Observable instance cached throughout lifetime of [ViewModel].
-     * Stream (subscription) is also scoped to the lifetime of the [ViewModel], once created.
-     * This implies that after [Screen] is bound to the view model, this stream is created and will
-     * remain in memory until [ViewModel.onCleared] (TODO: until ViewModel is GC'ed, really)
-     */
-    private val states: Observable<State> by lazy {
+    private val stateStream = StateStream<State> {
         actions.compose(stateMachine)
-            .replay(1)
-            .autoConnect()
     }
 
     override fun bind(screen: Screen<Action, State>): Disposable {
         val screenDisposable = CompositeDisposable()
-        screenDisposable += states.bind(screen.render)
+        screenDisposable += stateStream.stream.bind(screen.render)
         screenDisposable += screen.userActions.subscribe {
             actions.accept(it)
         }
@@ -88,7 +79,86 @@ abstract class ReduxViewModel<Action, State, Arguments> : ViewModel(),
     }
 
     override fun onCleared() {
-        //TODO assuming this viewmodel instance is GC'ed shortly after this.. But if not, should we explicitly dispose the states stream?
         Timber.d("$this onCleared()")
+        stateStream.reset()
+    }
+
+
+    //    private val stateHelper = StateStreamHelper<State>()
+    //
+    //    val states: Observable<State>
+    //        get() {
+    //            synchronized(stateHelper) {
+    //                if (stateHelper.stateStream == null) {
+    //                    stateHelper.stateStream = actions.compose(stateMachine)
+    //                        .replay(1)
+    //                        .autoConnect(1) { viewModelDisposable += it }
+    //
+    //                }
+    //                return stateHelper.stateStream!!
+    //            }
+    //        }
+    //
+    //    class StateStreamHelper<State> {
+    //        var stateStream: Observable<State>? = null
+    //            set(value) {
+    //                synchronized(this) {
+    //                    value
+    //                }
+    //            }
+    //
+    //        fun reset() {
+    //            stateStream = null
+    //        }
+    //
+    //    }
+
+
+    /**
+     * A value type wrapper that exposes a hot [Observable] that can be easily aligned with the lifecycle
+     * of the [ViewModel]
+     *
+     * The provided [states] lambda define the "real" stream of states for this [ViewModel]. The state machine, as such.
+     * This class applies caching of that state stream by way of [Observable.replay], such that views
+     * can rebind to the [ViewModel] and still get the retained state stream.
+     *
+     * Once the [ViewModel.onCleared] is invoked, [reset] should be invoked in order to both
+     *
+     *      a) dispose of the upstream subscription to [states] (which could involve expensive resources)
+     *      b) clear the cache items.
+     *
+     * The latter is done by re-creating the cached stream.
+     */
+    private class StateStream<State>(private val states: () -> Observable<State>) {
+        /**
+         * A [Disposable] that controls the subscription to the upstream source, which is the state
+         * stream.
+         */
+        private val disposable = CompositeDisposable()
+
+        private var _stream: Observable<State>? = null
+
+        val stream: Observable<State>
+            get() {
+                synchronized(this) {
+                    if (_stream == null) {
+                        _stream = states().replay(1)
+                            .autoConnect(1) { disposable += it }
+                    }
+                    return _stream!! // guaranteed to be not null because synchronized
+                }
+            }
+
+        /**
+         * When invoked, it will dispose the underlying subscription to the [states] and clear any
+         * cached state.
+         */
+        fun reset() {
+            disposable.clear() // dispose the upstream connection
+            synchronized(this) {
+                _stream = null
+            }
+        }
+
     }
 }
