@@ -4,11 +4,11 @@ import org.gradle.api.artifacts.dsl.RepositoryHandler
 import org.gradle.kotlin.dsl.maven
 
 object Versions {
-    const val kotlinVersion = "1.2.60"
+    const val kotlinVersion = "1.3.10"
     const val kotlinCoroutines = "0.23.3"
     const val minSdk = 21
-    const val targetSdk = 27
-    const val compileSdk = 27
+    const val targetSdk = 28
+    const val compileSdk = 28
     const val buildTools = "27.0.3"
 
     // Google
