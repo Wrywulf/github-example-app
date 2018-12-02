@@ -1,6 +1,7 @@
 import com.android.build.gradle.ProguardFiles.getDefaultProguardFile
 import com.android.tools.build.bundletool.utils.Versions
 import de.mannodermaus.gradle.plugins.junit5.junitPlatform
+import org.gradle.internal.impldep.org.junit.platform.launcher.EngineFilter.includeEngines
 import org.gradle.kotlin.dsl.kotlin
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
 import org.jetbrains.kotlin.gradle.internal.AndroidExtensionsExtension
@@ -16,7 +17,6 @@ plugins {
 
 //android {
 android {
-    buildToolsVersion("28.0.1")
     compileSdkVersion(28)
     defaultConfig {
         applicationId = "com.jayway.example.speakerrecognition"
@@ -42,11 +42,11 @@ android {
     }
 
     testOptions {
-        junitPlatform {
-            filters {
-                includeEngines("spek")
-            }
-        }
+//        junitPlatform {
+//            filters(fun(): Any {
+//                return includeEngines("spek")
+//            })
+//        }
     }
 }
 

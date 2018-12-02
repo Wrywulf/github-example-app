@@ -9,7 +9,6 @@ object Versions {
     const val minSdk = 21
     const val targetSdk = 28
     const val compileSdk = 28
-    const val buildTools = "27.0.3"
 
     // Google
     const val playServices = "11.8.0"

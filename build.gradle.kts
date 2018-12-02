@@ -4,7 +4,7 @@ buildscript {
     repositories(BuildLibs.repositories)
 
     dependencies {
-        classpath("com.android.tools.build:gradle:3.2.1")
+        classpath("com.android.tools.build:gradle:3.3.0-rc01")
         classpath(kotlin("gradle-plugin", version = Versions.kotlinVersion))
         classpath(BuildLibs.androidXNavigationPlugin)
         classpath(BuildLibs.junitPlatformGradlePlugin)
